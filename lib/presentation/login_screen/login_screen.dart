@@ -71,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
     if (value == null || value.isEmpty) {
       return 'Por favor, insira sua senha';
     }
-    if (value.length < 6) {
-      return 'A senha deve ter pelo menos 6 caracteres';
+    if (value.length < 8) {
+      return 'A senha deve ter pelo menos 8 caracteres';
     }
     return null;
   }
@@ -203,10 +203,10 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         // Community logo
         Container(
-          width: 25.w,
+          width: 27.w,
           height: 25.w,
           decoration: BoxDecoration(
-            color: AppTheme.lightTheme.primaryColor,
+            // color: AppTheme.lightTheme.primaryColor,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
@@ -217,10 +217,15 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
           child: Center(
-            child: CustomIconWidget(
-              iconName: 'home',
-              color: Colors.white,
-              size: 12.w,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.0),
+
+              child: Image.asset(
+                'images/logotipo-EI2.png',
+                fit: BoxFit.fill,
+                width: double.infinity,
+                height: double.infinity
+              ),
             ),
           ),
         ),
@@ -229,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         // App title
         Text(
-          'NeighborConnect',
+          'Amigo da Vizinhança',
           style: AppTheme.lightTheme.textTheme.headlineMedium?.copyWith(
             color: AppTheme.lightTheme.primaryColor,
             fontWeight: FontWeight.bold,
@@ -237,11 +242,11 @@ class _LoginScreenState extends State<LoginScreen> {
           textAlign: TextAlign.center,
         ),
 
-        SizedBox(height: 1.h),
+        SizedBox(height: 0.8.h),
 
         // Subtitle
         Text(
-          'Conectando vizinhos, construindo comunidade',
+          'Vizinhos que se ajudam, comunidades que prosperam.',
           style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
             color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
           ),

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sizer/sizer.dart';
 
-import '../core/app_export.dart';
-import '../login_screen/community_feed_screen/widgets/business_carousel_widget.dart';
-import '../login_screen/community_feed_screen/widgets/community_header_widget.dart';
-import '../login_screen/community_feed_screen/widgets/empty_feed_widget.dart';
-import '../login_screen/community_feed_screen/widgets/post_card_widget.dart';
-import '../login_screen/community_feed_screen/widgets/quick_action_chips_widget.dart';
+import '../../core/app_export.dart';
+import './widgets/business_carousel_widget.dart';
+import './widgets/community_header_widget.dart';
+import './widgets/empty_feed_widget.dart';
+import './widgets/post_card_widget.dart';
+import './widgets/quick_action_chips_widget.dart';
 
 class CommunityFeedScreen extends StatefulWidget {
   const CommunityFeedScreen({Key? key}) : super(key: key);
@@ -352,11 +352,19 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
                       itemCount: _posts.length +
                           2, // +2 for business carousel and loading
                       itemBuilder: (context, index) {
+                        
                         if (index == 2) {
                           // Show business carousel after 2nd post
-                          return BusinessCarouselWidget(
-                            businesses: _businesses,
-                            onViewCoupon: _handleBusinessCoupon,
+                          return SizedBox(
+                              height: 280.0,
+                              child: OverflowBox(
+                                maxHeight: 280.0, //força o limite máximo
+                                alignment: Alignment.topCenter,
+                                child: BusinessCarouselWidget(
+                                  businesses: _businesses,
+                                  onViewCoupon: _handleBusinessCoupon,
+                                ),
+                              ),
                           );
                         }
 

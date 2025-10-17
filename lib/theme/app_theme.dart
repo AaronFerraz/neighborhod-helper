@@ -104,7 +104,7 @@ class AppTheme {
     ),
 
     // Card theme with adaptive elevation
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: surfaceVariantLight,
       elevation: 2.0, // Material elevation level
       shadowColor: shadowLight,
@@ -290,7 +290,7 @@ class AppTheme {
       trackHeight: 4.0,
     ),
 
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       labelColor: primaryLight,
       unselectedLabelColor: onSurfaceVariantLight,
       indicatorColor: primaryLight,
@@ -409,7 +409,7 @@ class AppTheme {
       iconTheme: IconThemeData(color: onSurfaceDark),
       actionsIconTheme: IconThemeData(color: onSurfaceDark),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: surfaceVariantDark,
       elevation: 2.0,
       shadowColor: shadowDark,
@@ -576,7 +576,7 @@ class AppTheme {
       inactiveTrackColor: outlineDark,
       trackHeight: 4.0,
     ),
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       labelColor: primaryDark,
       unselectedLabelColor: onSurfaceVariantDark,
       indicatorColor: primaryDark,
