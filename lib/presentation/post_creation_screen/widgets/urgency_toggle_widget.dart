@@ -77,7 +77,7 @@ class UrgencyToggleWidget extends StatelessWidget {
             Switch(
               value: isUrgent,
               onChanged: onUrgencyChanged,
-              activeColor: AppTheme.lightTheme.colorScheme.error,
+              activeThumbColor: AppTheme.lightTheme.colorScheme.error,
               activeTrackColor:
                   AppTheme.lightTheme.colorScheme.error.withValues(alpha: 0.3),
             ),

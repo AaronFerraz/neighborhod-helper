@@ -45,7 +45,7 @@ class BusinessCarouselWidget extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           SizedBox(
-            height: 32.h,
+            height: 35.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -53,8 +53,8 @@ class BusinessCarouselWidget extends StatelessWidget {
               itemBuilder: (context, index) {
                 final business = businesses[index];
                 return SizedBox( 
-                  // width: 90.w,
-                  // height: 40.h,
+                  width: 75.w,
+                  height: 35.h,
 
                   child: BusinessRecommendationWidget(
                     business: business,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
+
 import '../../core/app_export.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -40,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     setState(() {
-      _isFormValid = _isValidEmailOrCPF(email) && password.length >= 6;
+      _isFormValid = _isValidEmailOrCPF(email) && password.length >= 8;
     });
   }
 
@@ -137,22 +138,38 @@ class _LoginScreenState extends State<LoginScreen> {
   void _navigateToRegistration() {
     // For now, show a message since registration screen is not implemented
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Funcionalidade de cadastro em desenvolvimento'),
-        duration: Duration(seconds: 2),
+      const SnackBar(content: Row(children: [
+          Icon(Icons.warning, color: Colors.white),
+          SizedBox(width: 8),
+          Expanded(child: Text("Funcionalidade de cadastro em desenvolvimento"))
+        ],
+        ),
+        duration: Duration(seconds: 3),
+        showCloseIcon: true,
+        elevation: 8,
+        closeIconColor: Colors.white,
       ),
     );
   }
 
   void _navigateToPasswordRecovery() {
     // For now, show a message since password recovery is not implemented
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content:
-            Text('Funcionalidade de recuperação de senha em desenvolvimento'),
-        duration: Duration(seconds: 2),
+        content: Row (children: [
+          Icon(Icons.warning, color: Colors.white),
+          SizedBox(width: 8),
+          Expanded(child: Text("Funcionalidade de recuperação de senha em desenvolvimento")),
+        ],
+        ),
+        duration: Duration(seconds: 3),
+        showCloseIcon: true,
+        elevation: 8,
+        closeIconColor: Colors.white,
       ),
     );
+
   }
 
   @override
@@ -266,9 +283,9 @@ class _LoginScreenState extends State<LoginScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildTrustBadge('Seguro', 'verified_user'),
-        SizedBox(width: 4.w),
+        SizedBox(width: 3.w),
         _buildTrustBadge('Verificado', 'security'),
-        SizedBox(width: 4.w),
+        SizedBox(width: 3.w),
         _buildTrustBadge('Confiável', 'shield'),
       ],
     );
@@ -384,7 +401,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: CustomIconWidget(
                   iconName: 'lock_outline',
                   color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                  size: 5.w,
+                  size: 4.w,
                 ),
               ),
               suffixIcon: IconButton(
@@ -411,9 +428,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: TextButton(
               onPressed: _navigateToPasswordRecovery,
               child: Text(
-                'Esqueci minha senha',
+                'Esqueci a senha',
                 style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.lightTheme.primaryColor,
+                  color: Colors.blueGrey,
                   fontWeight: FontWeight.w500,
                 ),
               ),

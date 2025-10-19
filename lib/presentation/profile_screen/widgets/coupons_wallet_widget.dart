@@ -58,7 +58,7 @@ class CouponsWalletWidget extends StatelessWidget {
           availableCoupons.isEmpty
               ? _buildEmptyState()
               : SizedBox(
-                  height: 20.h,
+                  height: 25.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 4.w),

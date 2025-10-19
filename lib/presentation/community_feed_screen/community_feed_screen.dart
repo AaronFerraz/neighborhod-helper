@@ -356,9 +356,9 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
                         if (index == 2) {
                           // Show business carousel after 2nd post
                           return SizedBox(
-                              height: 280.0,
+                              height: 50.h,
                               child: OverflowBox(
-                                maxHeight: 280.0, //força o limite máximo
+                                maxHeight: 50.h, //força o limite máximo
                                 alignment: Alignment.topCenter,
                                 child: BusinessCarouselWidget(
                                   businesses: _businesses,
