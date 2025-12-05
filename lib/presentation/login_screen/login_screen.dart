@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
-
 import '../../core/app_export.dart';
+import '../../core/mock_auth.dart';
+import '../registration_screen/registration_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -93,8 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
       final email = _emailController.text.trim();
       final password = _passwordController.text;
 
-      // Mock authentication - check against predefined credentials
-      if (_authenticateUser(email, password)) {
+      // Mock authentication - check against centralized mock auth
+      if (MockAuth.authenticateUser(email, password)) {
         // Success haptic feedback
         HapticFeedback.lightImpact();
 
@@ -122,33 +123,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  bool _authenticateUser(String email, String password) {
-    // Mock credentials for different user types
-    final mockCredentials = [
-      {'email': 'admin@vizinhanca.com', 'password': 'admin123'},
-      {'email': 'morador@email.com', 'password': 'morador123'},
-      {'email': '12345678901', 'password': 'cpf123'},
-      {'email': 'sindico@condominio.com', 'password': 'sindico123'},
-    ];
-
-    return mockCredentials
-        .any((cred) => cred['email'] == email && cred['password'] == password);
-  }
+  // Authentication is handled by `MockAuth` in `lib/core/mock_auth.dart`.
 
   void _navigateToRegistration() {
-    // For now, show a message since registration screen is not implemented
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Row(children: [
-          Icon(Icons.warning, color: Colors.white),
-          SizedBox(width: 8),
-          Expanded(child: Text("Funcionalidade de cadastro em desenvolvimento"))
-        ],
-        ),
-        duration: Duration(seconds: 3),
-        showCloseIcon: true,
-        elevation: 8,
-        closeIconColor: Colors.white,
-      ),
+    // Use a direct push to avoid missing-route errors during hot-reload
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const RegistrationScreen()),
     );
   }
 
@@ -157,11 +138,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Row (children: [
-          Icon(Icons.warning, color: Colors.white),
-          SizedBox(width: 8),
-          Expanded(child: Text("Funcionalidade de recuperação de senha em desenvolvimento")),
-        ],
+        content: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.white),
+            SizedBox(width: 8),
+            Expanded(
+                child: Text(
+                    "Funcionalidade de recuperação de senha em desenvolvimento")),
+          ],
         ),
         duration: Duration(seconds: 3),
         showCloseIcon: true,
@@ -169,7 +153,6 @@ class _LoginScreenState extends State<LoginScreen> {
         closeIconColor: Colors.white,
       ),
     );
-
   }
 
   @override
@@ -236,13 +219,10 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Center(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
-
-              child: Image.asset(
-                'images/logotipo-EI2.png',
-                fit: BoxFit.fill,
-                width: double.infinity,
-                height: double.infinity
-              ),
+              child: Image.asset('images/logotipo-EI2.png',
+                  fit: BoxFit.fill,
+                  width: double.infinity,
+                  height: double.infinity),
             ),
           ),
         ),

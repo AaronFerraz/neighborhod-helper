@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../../core/mock_images.dart';
 
 class CommunityHeaderWidget extends StatelessWidget {
   final String communityName;
@@ -25,121 +26,128 @@ class CommunityHeaderWidget extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
       decoration: BoxDecoration(
-        color: AppTheme.lightTheme.colorScheme.surface,
+        color: const Color(0xFF305c84), // Azul Profundo
         boxShadow: [
           BoxShadow(
-            color: AppTheme.lightTheme.colorScheme.shadow,
+            color: Colors.black.withValues(alpha: 0.1),
             offset: const Offset(0, 2),
-            blurRadius: 4,
+            blurRadius: 8,
           ),
         ],
       ),
       child: SafeArea(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Profile Avatar e Comunidade
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    communityName,
-                    style:
-                        AppTheme.lightTheme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: AppTheme.lightTheme.colorScheme.primary,
+                  GestureDetector(
+                    onTap: onAvatarTap,
+                    child: Container(
+                      width: 11.w,
+                      height: 11.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                          width: 2,
+                        ),
+                      ),
+                      child: MockImages.buildProfileImage(
+                        size: 11.w,
+                        imageUrl: userAvatarUrl,
+                        semanticLabel: "Foto do perfil do usuário",
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  SizedBox(height: 0.5.h),
-                  Text(
-                    'Conectando vizinhos',
-                    style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                  SizedBox(width: 3.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          communityName,
+                          style: AppTheme.lightTheme.textTheme.titleMedium
+                              ?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 0.3.h),
+                        Text(
+                          'Conectando vizinhos',
+                          style:
+                              AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            SizedBox(width: 3.w),
-            Stack(
-              children: [
-                GestureDetector(
-                  onTap: onUrgentAlertsTap,
-                  child: Container(
-                    padding: EdgeInsets.all(2.w),
+            // Notification Icon
+            GestureDetector(
+              onTap: onUrgentAlertsTap,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(2.5.w),
                     decoration: BoxDecoration(
-                      color: AppTheme.lightTheme.colorScheme.surface,
+                      color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: AppTheme.lightTheme.colorScheme.outline,
+                        color: Colors.white.withValues(alpha: 0.2),
                         width: 1,
                       ),
                     ),
                     child: CustomIconWidget(
                       iconName: 'notifications',
                       color: urgentAlertsCount > 0
-                          ? AppTheme.lightTheme.colorScheme.error
-                          : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                      size: 6.w,
+                          ? Colors.red.shade400
+                          : Colors.white.withValues(alpha: 0.6),
+                      size: 5.w,
                     ),
                   ),
-                ),
-                urgentAlertsCount > 0
-                    ? Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 1.5.w,
-                            vertical: 0.5.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.lightTheme.colorScheme.error,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 5.w,
-                            minHeight: 2.5.h,
-                          ),
+                  if (urgentAlertsCount > 0)
+                    Positioned(
+                      // align the badge slightly lower so it appears under the header block
+                      right: 0,
+                      top: 1.h,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 1.w,
+                          vertical: 0.35.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade400,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 4.w,
+                          minHeight: 2.h,
+                        ),
+                        child: Center(
                           child: Text(
                             urgentAlertsCount > 99
                                 ? '99+'
                                 : urgentAlertsCount.toString(),
-                            style: AppTheme.lightTheme.textTheme.labelSmall
-                                ?.copyWith(
-                              color: AppTheme.lightTheme.colorScheme.onError,
-                              fontWeight: FontWeight.w600,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w700,
                             ),
                             textAlign: TextAlign.center,
                           ),
                         ),
-                      )
-                    : const SizedBox.shrink(),
-              ],
-            ),
-            SizedBox(width: 3.w),
-            GestureDetector(
-              onTap: onAvatarTap,
-              child: Container(
-                width: 12.w,
-                height: 12.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppTheme.lightTheme.colorScheme.primary,
-                    width: 2,
-                  ),
-                ),
-                child: ClipOval(
-                  child: CustomImageWidget(
-                    imageUrl: userAvatarUrl,
-                    width: 12.w,
-                    height: 12.w,
-                    fit: BoxFit.cover,
-                    semanticLabel: "Foto do perfil do usuário",
-                  ),
-                ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],

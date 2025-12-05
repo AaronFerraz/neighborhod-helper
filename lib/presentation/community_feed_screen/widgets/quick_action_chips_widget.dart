@@ -20,8 +20,8 @@ class QuickActionChipsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 8.h,
-      padding: EdgeInsets.symmetric(vertical: 1.h),
+      height: 7.h,
+      padding: EdgeInsets.symmetric(vertical: 0.8.h),
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -67,7 +67,7 @@ class QuickActionChipsWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(25),
@@ -82,7 +82,7 @@ class QuickActionChipsWidget extends StatelessWidget {
             CustomIconWidget(
               iconName: icon,
               color: color,
-              size: 5.w,
+              size: 4.w,
             ),
             SizedBox(width: 2.w),
             Text(

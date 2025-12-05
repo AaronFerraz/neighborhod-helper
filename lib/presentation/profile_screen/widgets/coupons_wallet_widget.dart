@@ -40,7 +40,7 @@ class CouponsWalletWidget extends StatelessWidget {
                       EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.w),
                   decoration: BoxDecoration(
                     color: AppTheme.lightTheme.colorScheme.secondary
-                        .withValues(alpha: 0.1),
+                        .withOpacity(0.1),
                     borderRadius: BorderRadius.circular(2.w),
                   ),
                   child: Text(
@@ -58,7 +58,7 @@ class CouponsWalletWidget extends StatelessWidget {
           availableCoupons.isEmpty
               ? _buildEmptyState()
               : SizedBox(
-                  height: 25.h,
+                  height: 28.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -81,7 +81,7 @@ class CouponsWalletWidget extends StatelessWidget {
         color: AppTheme.lightTheme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(3.w),
         border: Border.all(
-          color: AppTheme.lightTheme.colorScheme.outline.withValues(alpha: 0.2),
+          color: AppTheme.lightTheme.colorScheme.outline.withOpacity(0.2),
         ),
       ),
       child: Column(
@@ -91,7 +91,7 @@ class CouponsWalletWidget extends StatelessWidget {
             color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
             size: 12.w,
           ),
-          SizedBox(height: 2.h),
+          SizedBox(height: 4.w),
           Text(
             'Nenhum cupom disponível',
             style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
@@ -117,11 +117,12 @@ class CouponsWalletWidget extends StatelessWidget {
     return Container(
       width: 70.w,
       margin: EdgeInsets.only(right: 3.w),
+      // Altura contida pelo SizedBox do pai (25.h)
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             AppTheme.lightTheme.colorScheme.secondary,
-            AppTheme.lightTheme.colorScheme.secondary.withValues(alpha: 0.8),
+            AppTheme.lightTheme.colorScheme.secondary.withOpacity(0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -129,7 +130,7 @@ class CouponsWalletWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(3.w),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.lightTheme.colorScheme.shadow,
+            color: AppTheme.lightTheme.colorScheme.shadow.withOpacity(0.2),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -184,16 +185,23 @@ class CouponsWalletWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 0.5.h),
-                Text(
-                  coupon['description'] as String,
-                  style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                    color: AppTheme.lightTheme.colorScheme.onSecondary
-                        .withValues(alpha: 0.9),
+                // CORREÇÃO DE OVERFLOW: Usando Flexible
+                Expanded( 
+                  child: Text(
+                    coupon['description'] as String,
+                    style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.lightTheme.colorScheme.onSecondary
+                          .withOpacity(0.9),
+                    ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
-                const Spacer(),
+                
+                // const Spacer(), // O Spacer usa o espaço restante
+                SizedBox(height: 1.h),
+                
+
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -225,7 +233,7 @@ class CouponsWalletWidget extends StatelessWidget {
             child: CustomIconWidget(
               iconName: 'local_offer',
               color: AppTheme.lightTheme.colorScheme.onSecondary
-                  .withValues(alpha: 0.3),
+                  .withOpacity(0.3),
               size: 8.w,
             ),
           ),
@@ -254,36 +262,27 @@ class CouponsWalletWidget extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 3.h),
+                // SIMULAÇÃO VISUAL DE QR CODE (Mais realista)
                 Container(
                   width: 50.w,
                   height: 50.w,
                   decoration: BoxDecoration(
-                    color:
-                        AppTheme.lightTheme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(2.w),
+                    color: Colors.white,
                     border: Border.all(
                       color: AppTheme.lightTheme.colorScheme.outline
-                          .withValues(alpha: 0.2),
+                          .withOpacity(0.5),
                     ),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomIconWidget(
-                        iconName: 'qr_code',
-                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                        size: 20.w,
-                      ),
-                      SizedBox(height: 2.h),
-                      Text(
-                        'QR Code',
-                        style:
-                            AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                          color:
-                              AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.all(2.w),
+                    child: Center(
+                       // Simula o padrão de um QR Code com imagem placeholder
+                       child: Image.network(
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1024px-QR_code_for_mobile_English_Wikipedia.svg.png',
+                          fit: BoxFit.contain,
+                          color: AppTheme.lightTheme.colorScheme.onSurface,
+                       ),
+                    ),
                   ),
                 ),
                 SizedBox(height: 3.h),

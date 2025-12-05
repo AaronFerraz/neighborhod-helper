@@ -47,7 +47,7 @@ class LogoutSectionWidget extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           Text(
-            'Versão 1.0.0',
+            'Versão 2.0',
             style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
               color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
             ),

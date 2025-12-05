@@ -1,3 +1,5 @@
+// business_recommendation_widget.dart
+
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -15,15 +17,26 @@ class BusinessRecommendationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // A altura alocada pelo carousel pai é 35.h
+    // Definimos uma altura máxima para o Container/Card
+    const double maxCardHeight = 35; // Usamos 35.h, mas aqui usamos o número para referência Sizer
+    
     return Container(
       width: 80.w,
       margin: EdgeInsets.only(right: 4.w),
+      // Adicionando uma restrição forte de altura ao Container
+      constraints: BoxConstraints(maxHeight: maxCardHeight.h), // Conter a altura
       child: Card(
         child: Padding(
-          padding: EdgeInsets.all(4.w),
+          padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.w), // 3.w é menor que 4.w
+          // padding: EdgeInsets.all(4.w),
+          // CORREÇÃO: Linha 25 (A Column causadora do erro) deve ser contida.
+          // Usamos uma Column aqui, mas precisamos garantir que seus filhos não se somem
+          // a mais de 35.h. Como o problema é a soma, faremos uma otimização:
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Linhas 1 a 20: Logo, Nome, Categoria, Desconto (Altura ~18.h)
               Row(
                 children: [
                   Container(
@@ -78,7 +91,7 @@ class BusinessRecommendationWidget extends StatelessWidget {
                         EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
                     decoration: BoxDecoration(
                       color: AppTheme.lightTheme.colorScheme.secondary
-                          .withValues(alpha: 0.1),
+                          .withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -92,13 +105,19 @@ class BusinessRecommendationWidget extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 2.h),
-              Text(
-                business['description'] as String,
-                style: AppTheme.lightTheme.textTheme.bodyMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              
+              // Descrição: Reduzindo o Text para caber no espaço restante
+              Expanded( 
+                  child: Text(
+                    business['description'] as String,
+                    style: AppTheme.lightTheme.textTheme.bodyMedium,
+                    maxLines: 3, // Garantindo um limite estrito para o texto
+                    overflow: TextOverflow.ellipsis,
+                  ),
               ),
-              SizedBox(height: 2.h),
+              SizedBox(height: 1.h), // Reduzido de 2.h para 1.h para economizar espaço
+              
+              // Rodapé: Localização e Botão
               Row(
                 children: [
                   Expanded(

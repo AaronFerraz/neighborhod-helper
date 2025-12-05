@@ -8,6 +8,8 @@ import './widgets/community_header_widget.dart';
 import './widgets/empty_feed_widget.dart';
 import './widgets/post_card_widget.dart';
 import './widgets/quick_action_chips_widget.dart';
+import './widgets/marketplace_teaser_widget.dart';
+import '../messages_screen/messages_screen.dart';
 
 class CommunityFeedScreen extends StatefulWidget {
   const CommunityFeedScreen({Key? key}) : super(key: key);
@@ -170,6 +172,59 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
     },
   ];
 
+  final List<Map<String, dynamic>> _marketplaceItems = [
+    {
+        'id': 1,
+        'title': 'Bicicleta de Montanha',
+        'price': 'R\$ 650',
+        'image': 'https://images.unsplash.com/photo-1485965120184-e220f721d03e',
+        'imageSemantic': 'Bicicleta de montanha preta e verde encostada',
+        'sellerName': 'Pedro Almeida', 
+        'sellerUnit': '301', 
+        'condition': 'Seminova, pneus novos',
+    },
+    {
+        'id': 2,
+        'title': 'Sofá 3 Lugares',
+        'price': 'R\$ 900',
+        'image': 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc',
+        'imageSemantic': 'Sofá de tecido cinza escuro moderno',
+        'sellerName': 'Julia Mendes', 
+        'sellerUnit': '402', 
+        'condition': 'Ótimo estado, sem manchas',
+    },
+    {
+        'id': 3,
+        'title': 'Cadeira Gamer Ergonômica',
+        'price': 'R\$ 220',
+        'image': 'https://images.unsplash.com/photo-1598300053892-5f6f7c7d1a5e',
+        'imageSemantic': 'Cadeira de escritório preta com detalhes coloridos',
+        'sellerName': 'Ricardo Gomes', 
+        'sellerUnit': '110', 
+        'condition': 'Usada, 6 meses de uso, pequenos desgastes',
+    },
+    {
+        'id': 4,
+        'title': 'Mudas de Suculentas',
+        'price': 'R\$ 15/unidade',
+        'image': 'https://images.unsplash.com/photo-1520627993099-0d8858d4a974',
+        'imageSemantic': 'Pequenas suculentas em vasos de cerâmica',
+        'sellerName': 'Ana Clara', 
+        'sellerUnit': '805', 
+        'condition': 'Novas, cultivadas em casa',
+    },
+    {
+        'id': 5,
+        'title': 'Micro-ondas 20L',
+        'price': 'R\$ 180',
+        'image': 'https://images.unsplash.com/photo-1627986060010-33e14316a3c9',
+        'imageSemantic': 'Micro-ondas prateado em bancada de cozinha',
+        'sellerName': 'Marcos Souza', 
+        'sellerUnit': '601', 
+        'condition': 'Funcionando perfeitamente, sem garantia',
+    },
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -233,15 +288,15 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
   }
 
   void _navigateToPostCreation() {
-    Navigator.pushNamed(context, '/post-creation-screen');
+    // Implementar navegação
   }
 
   void _navigateToProfile() {
-    Navigator.pushNamed(context, '/profile-screen');
+    // Implementar navegação
   }
 
   void _navigateToUrgentAlerts() {
-    Navigator.pushNamed(context, '/urgent-alerts-screen');
+    // Implementar navegação
   }
 
   void _handleQuickAction(String action) {
@@ -250,7 +305,7 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
     );
-    _navigateToPostCreation();
+    // _navigateToPostCreation();
   }
 
   void _handlePostAction(String action, Map<String, dynamic> post) {
@@ -296,10 +351,11 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
         break;
       case 1:
         tabName = "Perfil";
-        Navigator.pushNamed(context, '/profile-screen');
+        Navigator.pushNamed(context, AppRoutes.profile);
         return;
       case 2:
         tabName = "Mensagens";
+        Navigator.pushNamed(context, AppRoutes.messages);
         break;
       case 3:
         tabName = "Marketplace";
@@ -349,27 +405,33 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
                     child: ListView.builder(
                       controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: _posts.length +
-                          2, // +2 for business carousel and loading
+                      // posts (5) + carousel (1) + marketplace (1) + loading (1) = 8 itens
+                      itemCount: _posts.length + 3, 
                       itemBuilder: (context, index) {
-                        
+
+                        // 1. CAROUSEL (Index 2) - SIMPLIFICADO E CORRIGIDO
                         if (index == 2) {
-                          // Show business carousel after 2nd post
-                          return SizedBox(
-                              height: 50.h,
-                              child: OverflowBox(
-                                maxHeight: 50.h, //força o limite máximo
-                                alignment: Alignment.topCenter,
-                                child: BusinessCarouselWidget(
-                                  businesses: _businesses,
-                                  onViewCoupon: _handleBusinessCoupon,
-                                ),
-                              ),
+                          // Wrap com Container para garantir a aplicação da margem vertical
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 2.h),
+                            child: BusinessCarouselWidget(
+                              businesses: _businesses,
+                              onViewCoupon: _handleBusinessCoupon,
+                            ),
                           );
                         }
 
-                        if (index >= _posts.length + 1) {
-                          // Loading indicator at the end
+                        // 2. MARKETPLACE (Index 3)
+                        if (index == 3) {
+                          return Container(
+                                  margin: EdgeInsets.only(bottom: 6.h), // Adiciona 6% da altura da tela de margem inferior
+                                  child: MarketplaceTeaserWidget(items: _marketplaceItems),
+                              );                        
+                        }
+
+                        // 3. INDICADOR DE LOADING (Último item - Index 7)
+                        // Note que o itemCount é 8, então o último item válido é index 7 (5 posts + 2 widgets)
+                        if (index == _posts.length + 2) { 
                           return _isLoading
                               ? Container(
                                   padding: EdgeInsets.all(4.w),
@@ -382,10 +444,13 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
                                 )
                               : const SizedBox.shrink();
                         }
+                        
+                        // 4. POSTCARDS - Lógica de Indexação CORRIGIDA
+                        final postIndex = index < 2 ? index : index - 2;
 
-                        final postIndex = index > 2 ? index - 1 : index;
-                        if (postIndex >= _posts.length)
-                          return const SizedBox.shrink();
+                        if (postIndex >= _posts.length) {
+                            return const SizedBox.shrink();
+                        }
 
                         final post = _posts[postIndex];
                         return PostCardWidget(
@@ -412,9 +477,10 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToPostCreation,
+        backgroundColor: AppTheme.lightTheme.colorScheme.primary, // Usando primary
         child: CustomIconWidget(
           iconName: 'add',
-          color: AppTheme.lightTheme.colorScheme.onSecondary,
+          color: AppTheme.lightTheme.colorScheme.onPrimary,
           size: 7.w,
         ),
       ),
