@@ -9,7 +9,7 @@ import './widgets/empty_feed_widget.dart';
 import './widgets/post_card_widget.dart';
 import './widgets/quick_action_chips_widget.dart';
 import './widgets/marketplace_teaser_widget.dart';
-import '../messages_screen/messages_screen.dart';
+// import '../messages_screen/messages_screen.dart';
 
 class CommunityFeedScreen extends StatefulWidget {
   const CommunityFeedScreen({Key? key}) : super(key: key);
@@ -288,15 +288,15 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
   }
 
   void _navigateToPostCreation() {
-    // Implementar navegação
+    Navigator.pushNamed(context, AppRoutes.postCreation);
   }
 
   void _navigateToProfile() {
-    // Implementar navegação
+    Navigator.pushNamed(context, AppRoutes.profile);
   }
 
   void _navigateToUrgentAlerts() {
-    // Implementar navegação
+    Navigator.pushNamed(context, AppRoutes.urgentAlerts);
   }
 
   void _handleQuickAction(String action) {
@@ -477,11 +477,12 @@ class _CommunityFeedScreenState extends State<CommunityFeedScreen>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToPostCreation,
+        mini: true,
         backgroundColor: AppTheme.lightTheme.colorScheme.primary, // Usando primary
         child: CustomIconWidget(
           iconName: 'add',
           color: AppTheme.lightTheme.colorScheme.onPrimary,
-          size: 7.w,
+          size: 4.w,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

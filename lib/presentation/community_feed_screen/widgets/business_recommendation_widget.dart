@@ -115,7 +115,7 @@ class BusinessRecommendationWidget extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
               ),
-              SizedBox(height: 1.h), // Reduzido de 2.h para 1.h para economizar espaço
+              SizedBox(height: 0.5.h), // Reduzido de 2.h para 1.h para economizar espaço
               
               // Rodapé: Localização e Botão
               Row(

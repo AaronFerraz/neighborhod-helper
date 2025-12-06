@@ -1,10 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../core/app_export.dart'; // Contém CustomImageWidget, AppTheme, etc.
+import '../../core/app_export.dart';
+import '../../routes/app_routes.dart'; // Importe suas rotas (AppRoutes)
 
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({Key? key}) : super(key: key);
+
+  // Lógica de navegação replicada do CommunityFeedScreen (Simplificada para rotas nomeadas)
+  void _handleTabNavigation(BuildContext context, int index) {
+    String route = '';
+    // Mapeamento dos índices para as rotas (usando as constantes AppRoutes)
+    switch (index) {
+      case 0:
+        route = AppRoutes.communityFeed;
+        break;
+      case 1:
+        route = AppRoutes.profile;
+        break;
+      case 2:
+        return; // Já está na tela de mensagens
+      case 3:
+        route = AppRoutes.communityFeed; // Mock para Marketplace
+        break;
+      case 4:
+        route = AppRoutes.profile; // Mock para Configurações
+        break;
+    }
+
+    if (route.isNotEmpty) {
+      Navigator.pushNamed(context, route); 
+    }
+  }
+
+  // NOVO MÉTODO: Cor para o status da conversa
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'security':
+        return Colors.red.shade600; 
+      case 'help':
+        return AppTheme.lightTheme.colorScheme.error; 
+      case 'marketplace':
+        return AppTheme.lightTheme.colorScheme.secondary; 
+      case 'donation':
+        return AppTheme.lightTheme.colorScheme.tertiary; 
+      case 'admin':
+        return AppTheme.lightTheme.colorScheme.primary; 
+      default:
+        return AppTheme.lightTheme.colorScheme.primary.withOpacity(0.5);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +103,13 @@ class MessagesScreen extends StatelessWidget {
       },
     ];
 
+    // Constante para o índice ativo
+    const int currentIndex = 2; 
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mensagens', style: TextStyle(color: Colors.white)),
-        backgroundColor: AppTheme.lightTheme.primaryColor, // Azul Profundo
+        backgroundColor: AppTheme.lightTheme.colorScheme.primary, 
         elevation: 0,
       ),
       body: ListView.separated(
@@ -72,8 +121,9 @@ class MessagesScreen extends StatelessWidget {
           
           // Construção do Avatar com CustomImageWidget
           Widget avatar = CircleAvatar(
-              radius: 6.w,
-              backgroundColor: AppTheme.lightTheme.colorScheme.primary,
+              radius: 4.w,
+              // Usando a cor baseada no status da conversa
+              backgroundColor: _getStatusColor(convo['status'] as String), 
               child: convo['avatar'] != null 
                   ? ClipOval(
                       child: CustomImageWidget(
@@ -116,6 +166,59 @@ class MessagesScreen extends StatelessWidget {
           );
         },
       ),
+
+      // BOTTOM NAVIGATION BAR (Replicado do CommunityFeedScreen)
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentIndex, 
+        onTap: (index) => _handleTabNavigation(context, index),
+        selectedItemColor: AppTheme.lightTheme.colorScheme.primary,
+        unselectedItemColor: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+        backgroundColor: AppTheme.lightTheme.colorScheme.surface,
+        elevation: 8,
+        items: [
+          BottomNavigationBarItem(
+            icon: CustomIconWidget(
+              iconName: 'home',
+              color: currentIndex == 0 ? AppTheme.lightTheme.colorScheme.primary : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+              size: 6.w,
+            ),
+            label: 'Feed',
+          ),
+          BottomNavigationBarItem(
+            icon: CustomIconWidget(
+              iconName: 'person',
+              color: currentIndex == 1 ? AppTheme.lightTheme.colorScheme.primary : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+              size: 6.w,
+            ),
+            label: 'Perfil',
+          ),
+          BottomNavigationBarItem(
+            icon: CustomIconWidget(
+              iconName: 'message',
+              color: AppTheme.lightTheme.colorScheme.primary, 
+              size: 6.w,
+            ),
+            label: 'Mensagens',
+          ),
+          BottomNavigationBarItem(
+            icon: CustomIconWidget(
+              iconName: 'store',
+              color: currentIndex == 3 ? AppTheme.lightTheme.colorScheme.primary : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+              size: 6.w,
+            ),
+            label: 'Marketplace',
+          ),
+          BottomNavigationBarItem(
+            icon: CustomIconWidget(
+              iconName: 'settings',
+              color: currentIndex == 4 ? AppTheme.lightTheme.colorScheme.primary : AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+              size: 6.w,
+            ),
+            label: 'Configurações',
+          ),
+        ],
+      ),
     );
   }
 }
@@ -135,7 +238,6 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // Mock data para a conversa (Exemplo de negociação de Marketplace)
   final List<Map<String, dynamic>> _messages = [
     {'fromMe': false, 'text': 'Olá! Vi seu anúncio da Bicicleta de Montanha.'},
     {'fromMe': false, 'text': 'Ela ainda está disponível e qual seria o último preço?'},
@@ -168,14 +270,15 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.contactName, style: TextStyle(fontSize: 15.sp, color: Colors.white)),
+            // Nome na cor branca e tamanho maior
+            Text(widget.contactName, style: TextStyle(fontSize: 10.sp, color: Colors.white)),
             Text(
               widget.contactUnit, 
-              style: TextStyle(fontSize: 10.sp, color: Colors.white70),
+              style: TextStyle(fontSize: 7.sp, color: Colors.white70),
             ),
           ],
         ),
-        backgroundColor: const Color(0xFF305c84),
+        backgroundColor: AppTheme.lightTheme.colorScheme.primary, // Cor do tema
       ),
       body: Column(
         children: [
@@ -185,7 +288,6 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: EdgeInsets.all(4.w),
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                // Renderiza as mensagens em ordem inversa
                 final m = _messages[_messages.length - 1 - index]; 
                 return Align(
                   alignment:
@@ -193,10 +295,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Container(
                     margin: EdgeInsets.symmetric(vertical: 0.5.h),
                     padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.2.h),
-                    constraints: BoxConstraints(maxWidth: 75.w), // Limita largura da bolha
+                    constraints: BoxConstraints(maxWidth: 75.w), 
                     decoration: BoxDecoration(
                       color: m['fromMe']
-                          ? const Color(0xFF2C3E50) // Minha mensagem (Azul Profundo)
+                          ? AppTheme.lightTheme.colorScheme.primary 
                           : Colors.white,
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
@@ -230,7 +332,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       decoration: InputDecoration(
                         hintText: 'Escreva uma mensagem...',
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.w),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.5.w), // Aumentado para altura
                       ),
                     ),
                   ),
@@ -238,7 +340,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   FloatingActionButton(
                     onPressed: _send,
                     mini: true,
-                    backgroundColor: const Color(0xFF2C3E50),
+                    backgroundColor: AppTheme.lightTheme.colorScheme.primary,
                     child: const Icon(Icons.send, color: Colors.white),
                   )
                 ],

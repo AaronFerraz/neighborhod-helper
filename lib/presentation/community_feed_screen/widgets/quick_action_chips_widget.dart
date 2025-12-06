@@ -1,3 +1,5 @@
+// quick_action_chips_widget.dart
+
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -20,8 +22,8 @@ class QuickActionChipsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 7.h,
-      padding: EdgeInsets.symmetric(vertical: 0.8.h),
+      height: 8.h, 
+      padding: EdgeInsets.symmetric(vertical: 0.6.h),
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -58,7 +60,7 @@ class QuickActionChipsWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActionChip({
+Widget _buildActionChip({
     required String label,
     required String icon,
     required Color color,
@@ -67,17 +69,21 @@ class QuickActionChipsWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+        // CORREÇÃO: Aumentar o padding vertical para dar "respiro"
+        // De 1.2.h, vamos para 1.5.h ou 1.8.h para garantir centralização.
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h), 
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: color.withOpacity(0.1),
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
-            color: color.withValues(alpha: 0.3),
+            color: color.withOpacity(0.3),
             width: 1,
           ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          // MANTEMOS A CENTRALIZAÇÃO DO CONTEÚDO
+          crossAxisAlignment: CrossAxisAlignment.center, 
           children: [
             CustomIconWidget(
               iconName: icon,
@@ -85,12 +91,16 @@ class QuickActionChipsWidget extends StatelessWidget {
               size: 4.w,
             ),
             SizedBox(width: 2.w),
+            // O Text agora terá espaço suficiente para se centralizar
             Text(
               label,
               style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
                 color: color,
                 fontWeight: FontWeight.w600,
+                // height: 1.0; (removido, pois o padding compensa, mas se estiver aqui, mantenha)
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

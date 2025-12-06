@@ -5,177 +5,148 @@ import '../../../core/app_export.dart';
 
 class AlertCardWidget extends StatelessWidget {
   final Map<String, dynamic> alert;
-  final VoidCallback? onActionPressed;
-  final VoidCallback? onSecondaryActionPressed;
-  final VoidCallback? onMarkAsRead;
+  final VoidCallback onActionPressed;
+  final VoidCallback onSecondaryActionPressed;
+  final VoidCallback onMarkAsRead;
+  final Map<String, Color> typeColors; // Recebido do pai
 
   const AlertCardWidget({
     Key? key,
     required this.alert,
-    this.onActionPressed,
-    this.onSecondaryActionPressed,
-    this.onMarkAsRead,
+    required this.onActionPressed,
+    required this.onSecondaryActionPressed,
+    required this.onMarkAsRead,
+    required this.typeColors,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final alertType = alert['type'] as String? ?? 'maintenance';
-    final isEmergency = alertType == 'emergency';
-    final isSecurity = alertType == 'security';
-    final isMaintenance = alertType == 'maintenance';
-
-    Color borderColor = AppTheme.lightTheme.colorScheme.outline;
-    Color backgroundColor = AppTheme.lightTheme.colorScheme.surface;
-
-    if (isEmergency) {
-      borderColor = AppTheme.lightTheme.colorScheme.error;
-      backgroundColor =
-          AppTheme.lightTheme.colorScheme.error.withValues(alpha: 0.05);
-    } else if (isSecurity) {
-      borderColor = const Color(0xFFFF9800);
-      backgroundColor = const Color(0xFFFF9800).withValues(alpha: 0.05);
-    } else if (isMaintenance) {
-      borderColor = const Color(0xFFFFC107);
-      backgroundColor = const Color(0xFFFFC107).withValues(alpha: 0.05);
-    }
-
+    final alertType = alert['type'] as String;
+    final isRead = alert['isRead'] as bool;
+    final color = typeColors[alertType] ?? AppTheme.lightTheme.colorScheme.onSurfaceVariant; 
+    
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
+      margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.5.h),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        border: Border.all(color: borderColor, width: 2),
+        color: AppTheme.lightTheme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color:
-                AppTheme.lightTheme.colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 8,
+            color: Colors.black.withOpacity(isRead ? 0.05 : 0.1),
+            blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
+        border: Border.all(
+          color: isRead ? AppTheme.lightTheme.colorScheme.outline : color.withOpacity(0.5),
+          width: 1.5,
+        ),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(4.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(2.w),
-                  decoration: BoxDecoration(
-                    color: borderColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: CustomIconWidget(
-                    iconName: _getAlertIcon(alertType),
-                    color: borderColor,
-                    size: 20,
-                  ),
-                ),
-                SizedBox(width: 3.w),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _getAlertTypeLabel(alertType),
-                        style:
-                            AppTheme.lightTheme.textTheme.titleSmall?.copyWith(
-                          color: borderColor,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(height: 0.5.h),
-                      Text(
-                        _formatTimestamp(alert['timestamp']),
-                        style:
-                            AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                          color:
-                              AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (onMarkAsRead != null)
-                  GestureDetector(
-                    onTap: onMarkAsRead,
-                    child: Container(
-                      padding: EdgeInsets.all(1.w),
-                      child: CustomIconWidget(
-                        iconName: 'more_vert',
-                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                        size: 20,
+      child: InkWell(
+        onTap: onMarkAsRead, 
+        child: Padding(
+          padding: EdgeInsets.all(4.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Badge de Tipo
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: color.withOpacity(0.5), width: 0.8),
+                    ),
+                    child: Text(
+                      // CORREÇÃO: Usa a função de tradução
+                      _getAlertTypeLabel(alertType), 
+                      style: AppTheme.lightTheme.textTheme.labelSmall?.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-              ],
-            ),
-            SizedBox(height: 2.h),
-            if (alert['sender'] != null) ...[
+                  const Spacer(),
+                  // Ícone de Ação Principal
+                  IconButton(
+                    onPressed: onActionPressed,
+                    icon: CustomIconWidget(
+                      iconName: _getPrimaryActionIcon(alertType),
+                      color: color,
+                      size: 5.w,
+                    ),
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                  ),
+                  // Ícone Secundário
+                  if (_getSecondaryActionIcon(alertType).isNotEmpty)
+                    IconButton(
+                      onPressed: onSecondaryActionPressed,
+                      icon: CustomIconWidget(
+                        iconName: _getSecondaryActionIcon(alertType),
+                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                        size: 5.w,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(),
+                    ),
+                  SizedBox(width: 1.w),
+                  // Indicador de NÃO LIDO
+                  if (!isRead)
+                    CustomIconWidget(
+                      iconName: 'circle',
+                      color: color,
+                      size: 2.w,
+                    ),
+                ],
+              ),
+              SizedBox(height: 1.5.h),
+              
+              // Título
+              Text(
+                alert['title'] as String,
+                style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: isRead ? AppTheme.lightTheme.colorScheme.onSurface : color,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 1.h),
+              
+              // Descrição
+              Text(
+                alert['description'] as String,
+                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              
+              SizedBox(height: 1.5.h),
+              
+              // Rodapé
               Row(
                 children: [
                   CustomIconWidget(
                     iconName: 'person',
                     color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                    size: 16,
+                    size: 4.w,
                   ),
-                  SizedBox(width: 2.w),
+                  SizedBox(width: 1.w),
                   Text(
-                    'Enviado por: ${alert['sender']}',
+                    alert['sender'] as String,
                     style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
                       color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                ],
-              ),
-              SizedBox(height: 1.h),
-            ],
-            Text(
-              alert['description'] as String? ?? '',
-              style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.lightTheme.colorScheme.onSurface,
-                height: 1.4,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (alert['affectedAreas'] != null) ...[
-              SizedBox(height: 1.h),
-              Row(
-                children: [
-                  CustomIconWidget(
-                    iconName: 'location_on',
-                    color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                    size: 16,
-                  ),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: Text(
-                      'Áreas afetadas: ${alert['affectedAreas']}',
-                      style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (alert['estimatedResolution'] != null && isMaintenance) ...[
-              SizedBox(height: 1.h),
-              Row(
-                children: [
-                  CustomIconWidget(
-                    iconName: 'schedule',
-                    color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                    size: 16,
-                  ),
-                  SizedBox(width: 2.w),
+                  const Spacer(),
                   Text(
-                    'Previsão: ${alert['estimatedResolution']}',
+                    _formatTimestamp(alert['timestamp'] as DateTime),
                     style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
                       color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                     ),
@@ -183,124 +154,14 @@ class AlertCardWidget extends StatelessWidget {
                 ],
               ),
             ],
-            SizedBox(height: 2.h),
-            Row(
-              children: [
-                if (isEmergency) ...[
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: onActionPressed,
-                      icon: CustomIconWidget(
-                        iconName: 'phone',
-                        color: AppTheme.lightTheme.colorScheme.onError,
-                        size: 18,
-                      ),
-                      label: Text(
-                        'Ligar Emergência',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.lightTheme.colorScheme.error,
-                        foregroundColor:
-                            AppTheme.lightTheme.colorScheme.onError,
-                        padding: EdgeInsets.symmetric(vertical: 1.5.h),
-                      ),
-                    ),
-                  ),
-                ] else if (isSecurity) ...[
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: onActionPressed,
-                      icon: CustomIconWidget(
-                        iconName: 'visibility',
-                        color: const Color(0xFFFF9800),
-                        size: 16,
-                      ),
-                      label: Text(
-                        'Marcar como Visto',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFFF9800),
-                        side: const BorderSide(color: Color(0xFFFF9800)),
-                        padding: EdgeInsets.symmetric(vertical: 1.2.h),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 2.w),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: onSecondaryActionPressed,
-                      icon: CustomIconWidget(
-                        iconName: 'add_comment',
-                        color: const Color(0xFFFF9800),
-                        size: 16,
-                      ),
-                      label: Text(
-                        'Adicionar Info',
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFFF9800),
-                        side: const BorderSide(color: Color(0xFFFF9800)),
-                        padding: EdgeInsets.symmetric(vertical: 1.2.h),
-                      ),
-                    ),
-                  ),
-                ] else if (isMaintenance) ...[
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: onActionPressed,
-                      icon: CustomIconWidget(
-                        iconName: 'info_outline',
-                        color: const Color(0xFFFFC107),
-                        size: 16,
-                      ),
-                      label: Text(
-                        'Ver Detalhes',
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFFFC107),
-                        side: const BorderSide(color: Color(0xFFFFC107)),
-                        padding: EdgeInsets.symmetric(vertical: 1.5.h),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  String _getAlertIcon(String type) {
-    switch (type) {
-      case 'emergency':
-        return 'emergency';
-      case 'security':
-        return 'security';
-      case 'maintenance':
-        return 'build';
-      default:
-        return 'notification_important';
-    }
-  }
-
+  // FUNÇÕES AUXILIARES (TRADUÇÃO E ÍCONES)
+  
   String _getAlertTypeLabel(String type) {
     switch (type) {
       case 'emergency':
@@ -313,34 +174,23 @@ class AlertCardWidget extends StatelessWidget {
         return 'ALERTA';
     }
   }
+  
+  String _getPrimaryActionIcon(String type) {
+    if (type == 'emergency') return 'phone';
+    if (type == 'maintenance') return 'info_outline';
+    return 'check';
+  }
 
-  String _formatTimestamp(dynamic timestamp) {
-    if (timestamp == null) return '';
+  String _getSecondaryActionIcon(String type) {
+    if (type == 'security') return 'info_outline';
+    return '';
+  }
 
-    try {
-      DateTime dateTime;
-      if (timestamp is DateTime) {
-        dateTime = timestamp;
-      } else if (timestamp is String) {
-        dateTime = DateTime.parse(timestamp);
-      } else {
-        return '';
-      }
-
-      final now = DateTime.now();
-      final difference = now.difference(dateTime);
-
-      if (difference.inMinutes < 1) {
-        return 'Agora mesmo';
-      } else if (difference.inMinutes < 60) {
-        return '${difference.inMinutes}min atrás';
-      } else if (difference.inHours < 24) {
-        return '${difference.inHours}h atrás';
-      } else {
-        return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year} às ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-      }
-    } catch (e) {
-      return '';
-    }
+  String _formatTimestamp(DateTime timestamp) {
+    final difference = DateTime.now().difference(timestamp);
+    if (difference.inMinutes < 1) return 'agora';
+    if (difference.inHours < 1) return '${difference.inMinutes}min';
+    if (difference.inDays < 1) return '${difference.inHours}h';
+    return '${difference.inDays}d';
   }
 }

@@ -5,10 +5,14 @@ import '../../../core/app_export.dart';
 
 class AlertDetailsSheet extends StatefulWidget {
   final Map<String, dynamic> alert;
+  final Color typeColor; // << NOVO: Parâmetro obrigatório adicionado
+  final List<String> mockComments; // << NOVO: Parâmetro obrigatório adicionado
 
   const AlertDetailsSheet({
     Key? key,
     required this.alert,
+    required this.typeColor, // << CORRIGIDO
+    required this.mockComments, // << CORRIGIDO
   }) : super(key: key);
 
   @override
@@ -17,7 +21,9 @@ class AlertDetailsSheet extends StatefulWidget {
 
 class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
   final TextEditingController _commentController = TextEditingController();
-  final List<Map<String, dynamic>> _comments = [
+  
+  // Mocks de comentários internos (apenas para a entrada local, usaremos os mockComments passados para a exibição)
+  final List<Map<String, dynamic>> _internalComments = [
     {
       'id': 1,
       'author': 'Maria Silva',
@@ -26,8 +32,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
       'timestamp': DateTime.now().subtract(const Duration(minutes: 15)),
       'avatar':
           'https://images.unsplash.com/photo-1632421305114-cf8a167d7f45',
-      'semanticLabel':
-          'Profile photo of a middle-aged woman with short brown hair wearing a blue blouse',
+      'semanticLabel': 'Profile photo of a middle-aged woman with short brown hair wearing a blue blouse',
     },
     {
       'id': 2,
@@ -36,8 +41,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
       'timestamp': DateTime.now().subtract(const Duration(minutes: 8)),
       'avatar':
           'https://images.unsplash.com/photo-1718434216429-be81ffc07e6e',
-      'semanticLabel':
-          'Profile photo of a man with gray hair and beard wearing a white shirt',
+      'semanticLabel': 'Profile photo of a man with gray hair and beard wearing a white shirt',
     },
   ];
 
@@ -47,18 +51,72 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
     super.dispose();
   }
 
+  // Novo método para adicionar comentários mockados ao histórico
+  void _addComment(String text) {
+    if (text.trim().isEmpty) return;
+
+    setState(() {
+      _internalComments.insert(0, {
+        'id': _internalComments.length + 1,
+        'author': 'Você',
+        'comment': text.trim(),
+        'timestamp': DateTime.now(),
+        'avatar':
+            'https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png',
+        'semanticLabel': 'Your profile photo',
+      });
+    });
+
+    _commentController.clear();
+  }
+
+  // Funções auxiliares movidas para o State
+  String _getAlertIcon(String type) {
+    switch (type) {
+      case 'emergency': return 'emergency';
+      case 'security': return 'security';
+      case 'maintenance': return 'build';
+      default: return 'notification_important';
+    }
+  }
+
+  String _getAlertTypeLabel(String type) {
+    switch (type) {
+      case 'emergency': return 'EMERGÊNCIA';
+      case 'security': return 'SEGURANÇA';
+      case 'maintenance': return 'MANUTENÇÃO';
+      default: return 'ALERTA';
+    }
+  }
+
+  String _formatTimestamp(dynamic timestamp) {
+    if (timestamp == null) return '';
+    try {
+      DateTime dateTime = timestamp is DateTime ? timestamp : DateTime.parse(timestamp.toString());
+      final difference = DateTime.now().difference(dateTime);
+      if (difference.inMinutes < 60) return '${difference.inMinutes}min atrás';
+      if (difference.inHours < 24) return '${difference.inHours}h atrás';
+      return '${difference.inDays} dias atrás';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  String _formatFullTimestamp(dynamic timestamp) {
+    if (timestamp == null) return '';
+    try {
+      DateTime dateTime = timestamp is DateTime ? timestamp : DateTime.parse(timestamp.toString());
+      return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year} às ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
+    } catch (e) {
+      return '';
+    }
+  }
+// -------------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     final alertType = widget.alert['type'] as String? ?? 'maintenance';
-
-    Color borderColor = AppTheme.lightTheme.colorScheme.outline;
-    if (alertType == 'emergency') {
-      borderColor = AppTheme.lightTheme.colorScheme.error;
-    } else if (alertType == 'security') {
-      borderColor = const Color(0xFFFF9800);
-    } else if (alertType == 'maintenance') {
-      borderColor = const Color(0xFFFFC107);
-    }
+    final typeColor = widget.typeColor; // << USANDO O PARAMETRO CORRIGIDO
 
     return Container(
       height: 85.h,
@@ -87,13 +145,13 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                 Container(
                   padding: EdgeInsets.all(2.w),
                   decoration: BoxDecoration(
-                    color: borderColor.withValues(alpha: 0.1),
+                    color: typeColor.withOpacity(0.1), // Usando typeColor
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: CustomIconWidget(
                     iconName: _getAlertIcon(alertType),
-                    color: borderColor,
-                    size: 24,
+                    color: typeColor, // Usando typeColor
+                    size: 6.w,
                   ),
                 ),
                 SizedBox(width: 3.w),
@@ -112,7 +170,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                         _getAlertTypeLabel(alertType),
                         style:
                             AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                          color: borderColor,
+                          color: typeColor, // Usando typeColor
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -124,7 +182,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                   icon: CustomIconWidget(
                     iconName: 'close',
                     color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                    size: 24,
+                    size: 6.w,
                   ),
                 ),
               ],
@@ -133,7 +191,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
 
           Divider(
             color:
-                AppTheme.lightTheme.colorScheme.outline.withValues(alpha: 0.2),
+                AppTheme.lightTheme.colorScheme.outline.withOpacity(0.2),
             height: 1,
           ),
 
@@ -149,29 +207,28 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                     width: double.infinity,
                     padding: EdgeInsets.all(4.w),
                     decoration: BoxDecoration(
-                      color: borderColor.withValues(alpha: 0.05),
+                      color: typeColor.withOpacity(0.05), // Usando typeColor
                       borderRadius: BorderRadius.circular(12),
                       border:
-                          Border.all(color: borderColor.withValues(alpha: 0.2)),
+                          Border.all(color: typeColor.withOpacity(0.2)), // Usando typeColor
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // ... (Detalhes da hora, remetente, etc. - código mantido)
+                        
                         Row(
                           children: [
                             CustomIconWidget(
                               iconName: 'schedule',
-                              color: AppTheme
-                                  .lightTheme.colorScheme.onSurfaceVariant,
-                              size: 16,
+                              color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                              size: 4.w,
                             ),
                             SizedBox(width: 2.w),
                             Text(
                               _formatFullTimestamp(widget.alert['timestamp']),
-                              style: AppTheme.lightTheme.textTheme.bodySmall
-                                  ?.copyWith(
-                                color: AppTheme
-                                    .lightTheme.colorScheme.onSurfaceVariant,
+                              style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ],
@@ -182,17 +239,14 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                             children: [
                               CustomIconWidget(
                                 iconName: 'person',
-                                color: AppTheme
-                                    .lightTheme.colorScheme.onSurfaceVariant,
-                                size: 16,
+                                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                                size: 4.w,
                               ),
                               SizedBox(width: 2.w),
                               Text(
                                 'Enviado por: ${widget.alert['sender']}',
-                                style: AppTheme.lightTheme.textTheme.bodySmall
-                                    ?.copyWith(
-                                  color: AppTheme
-                                      .lightTheme.colorScheme.onSurfaceVariant,
+                                style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                                  color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
@@ -201,8 +255,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                         SizedBox(height: 2.h),
                         Text(
                           widget.alert['description'] as String? ?? '',
-                          style: AppTheme.lightTheme.textTheme.bodyMedium
-                              ?.copyWith(
+                          style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
                             height: 1.5,
                           ),
                         ),
@@ -213,19 +266,15 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                             children: [
                               CustomIconWidget(
                                 iconName: 'location_on',
-                                color: AppTheme
-                                    .lightTheme.colorScheme.onSurfaceVariant,
-                                size: 16,
+                                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                                size: 4.w,
                               ),
                               SizedBox(width: 2.w),
                               Expanded(
                                 child: Text(
                                   'Áreas afetadas: ${widget.alert['affectedAreas']}',
-                                  style: AppTheme
-                                      .lightTheme.textTheme.bodyMedium
-                                      ?.copyWith(
-                                    color: AppTheme.lightTheme.colorScheme
-                                        .onSurfaceVariant,
+                                  style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                                    color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               ),
@@ -238,17 +287,14 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                             children: [
                               CustomIconWidget(
                                 iconName: 'schedule',
-                                color: AppTheme
-                                    .lightTheme.colorScheme.onSurfaceVariant,
-                                size: 16,
+                                color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                                size: 4.w,
                               ),
                               SizedBox(width: 2.w),
                               Text(
                                 'Previsão de resolução: ${widget.alert['estimatedResolution']}',
-                                style: AppTheme.lightTheme.textTheme.bodyMedium
-                                    ?.copyWith(
-                                  color: AppTheme
-                                      .lightTheme.colorScheme.onSurfaceVariant,
+                                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
@@ -262,78 +308,17 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
 
                   // Comments section
                   Text(
-                    'Comentários dos Moradores',
+                    'Comentários da Comunidade (${widget.mockComments.length + _internalComments.length})',
                     style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   SizedBox(height: 2.h),
 
-                  // Comments list
-                  ..._comments.map((comment) => Container(
-                        margin: EdgeInsets.only(bottom: 2.h),
-                        padding: EdgeInsets.all(3.w),
-                        decoration: BoxDecoration(
-                          color: AppTheme
-                              .lightTheme.colorScheme.surfaceContainerHighest,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 4.w,
-                                  child: CustomImageWidget(
-                                    imageUrl: comment['avatar'] as String,
-                                    width: 8.w,
-                                    height: 8.w,
-                                    fit: BoxFit.cover,
-                                    semanticLabel:
-                                        comment['semanticLabel'] as String,
-                                  ),
-                                ),
-                                SizedBox(width: 3.w),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        comment['author'] as String,
-                                        style: AppTheme
-                                            .lightTheme.textTheme.titleSmall
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        _formatTimestamp(comment['timestamp']),
-                                        style: AppTheme
-                                            .lightTheme.textTheme.bodySmall
-                                            ?.copyWith(
-                                          color: AppTheme.lightTheme.colorScheme
-                                              .onSurfaceVariant,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 1.h),
-                            Text(
-                              comment['comment'] as String,
-                              style: AppTheme.lightTheme.textTheme.bodyMedium
-                                  ?.copyWith(
-                                height: 1.4,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-
+                  // Comments list (Combinando mocks externos e internos)
+                  ..._internalComments.map((comment) => _buildCommentTile(comment, typeColor)), // Comentários internos
+                  ...widget.mockComments.map((commentText) => _buildMockCommentTile(commentText)), // Mocks externos passados
+                  
                   SizedBox(height: 2.h),
                 ],
               ),
@@ -348,7 +333,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
               border: Border(
                 top: BorderSide(
                   color: AppTheme.lightTheme.colorScheme.outline
-                      .withValues(alpha: 0.2),
+                      .withOpacity(0.2),
                 ),
               ),
             ),
@@ -400,7 +385,7 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
                       icon: CustomIconWidget(
                         iconName: 'send',
                         color: AppTheme.lightTheme.colorScheme.onPrimary,
-                        size: 20,
+                        size: 6.w,
                       ),
                     ),
                   ),
@@ -413,96 +398,94 @@ class _AlertDetailsSheetState extends State<AlertDetailsSheet> {
     );
   }
 
-  void _addComment(String text) {
-    if (text.trim().isEmpty) return;
-
-    setState(() {
-      _comments.insert(0, {
-        'id': _comments.length + 1,
-        'author': 'Você',
-        'comment': text.trim(),
-        'timestamp': DateTime.now(),
-        'avatar':
-            'https://cdn.pixabay.com/photo/2015/03/04/22/35/avatar-659652_640.png',
-        'semanticLabel': 'Your profile photo',
-      });
-    });
-
-    _commentController.clear();
+  // --- Widgets Auxiliares ---
+  
+  // Para comentários internos (com avatar, nome e timestamp)
+  Widget _buildCommentTile(Map<String, dynamic> comment, Color color) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 2.h),
+      padding: EdgeInsets.all(3.w),
+      decoration: BoxDecoration(
+        color: AppTheme.lightTheme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 4.w,
+                child: CustomImageWidget(
+                  imageUrl: comment['avatar'] as String,
+                  width: 8.w,
+                  height: 8.w,
+                  fit: BoxFit.cover,
+                  semanticLabel: comment['semanticLabel'] as String,
+                ),
+              ),
+              SizedBox(width: 3.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      comment['author'] as String,
+                      style: AppTheme.lightTheme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: comment['author'] == 'Você' ? color : AppTheme.lightTheme.colorScheme.onSurface,
+                      ),
+                    ),
+                    Text(
+                      _formatTimestamp(comment['timestamp']),
+                      style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 1.h),
+          Text(
+            comment['comment'] as String,
+            style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  String _getAlertIcon(String type) {
-    switch (type) {
-      case 'emergency':
-        return 'emergency';
-      case 'security':
-        return 'security';
-      case 'maintenance':
-        return 'build';
-      default:
-        return 'notification_important';
-    }
-  }
-
-  String _getAlertTypeLabel(String type) {
-    switch (type) {
-      case 'emergency':
-        return 'EMERGÊNCIA';
-      case 'security':
-        return 'SEGURANÇA';
-      case 'maintenance':
-        return 'MANUTENÇÃO';
-      default:
-        return 'ALERTA';
-    }
-  }
-
-  String _formatTimestamp(dynamic timestamp) {
-    if (timestamp == null) return '';
-
-    try {
-      DateTime dateTime;
-      if (timestamp is DateTime) {
-        dateTime = timestamp;
-      } else if (timestamp is String) {
-        dateTime = DateTime.parse(timestamp);
-      } else {
-        return '';
-      }
-
-      final now = DateTime.now();
-      final difference = now.difference(dateTime);
-
-      if (difference.inMinutes < 1) {
-        return 'Agora mesmo';
-      } else if (difference.inMinutes < 60) {
-        return '${difference.inMinutes}min atrás';
-      } else if (difference.inHours < 24) {
-        return '${difference.inHours}h atrás';
-      } else {
-        return '${difference.inDays} dias atrás';
-      }
-    } catch (e) {
-      return '';
-    }
-  }
-
-  String _formatFullTimestamp(dynamic timestamp) {
-    if (timestamp == null) return '';
-
-    try {
-      DateTime dateTime;
-      if (timestamp is DateTime) {
-        dateTime = timestamp;
-      } else if (timestamp is String) {
-        dateTime = DateTime.parse(timestamp);
-      } else {
-        return '';
-      }
-
-      return '${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year} às ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-    } catch (e) {
-      return '';
-    }
+  // Para mocks externos (apenas texto)
+  Widget _buildMockCommentTile(String commentText) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: 1.5.h),
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+                Container(
+                    width: 1.5.w,
+                    height: 1.5.w,
+                    margin: EdgeInsets.only(top: 1.h, right: 3.w),
+                    decoration: BoxDecoration(
+                        color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                        shape: BoxShape.circle,
+                    ),
+                ),
+                Expanded(
+                    child: Text(
+                        commentText,
+                        style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
+                            color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
+                            height: 1.4,
+                        ),
+                    ),
+                ),
+            ],
+        ),
+    );
   }
 }

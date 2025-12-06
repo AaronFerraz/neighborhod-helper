@@ -77,7 +77,7 @@ class MarketplaceTeaserWidget extends StatelessWidget {
                         // Área da Imagem (Envolvida em Container para garantir dimensão)
                         Container(
                           width: 50.w,
-                          height: 15.h,
+                          height: 14.h,
                           decoration: BoxDecoration(
                              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
                              color: AppTheme.lightTheme.colorScheme.onSurface.withOpacity(0.1), // Placeholder visual

@@ -32,9 +32,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   bool _isVerified = true;
 
   // Engagement metrics
-  int _helpOffered = 12;
-  int _helpReceived = 8;
-  int _recommendationsMade = 15;
+  int _helpOffered = 14;
+  int _helpReceived = 7;
+  int _recommendationsMade = 19;
 
   // Mock data for user posts
   final List<Map<String, dynamic>> _userPosts = [
