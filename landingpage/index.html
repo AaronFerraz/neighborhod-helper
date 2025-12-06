@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigo da Vizinhança - Conecte-se ao seu Condomínio</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#E3F2FD', // Azul claro do fundo
+                            DEFAULT: '#2563EB', // Azul padrão
+                            dark: '#1E40AF', // Azul escuro
+                            accent: '#F97316', // Laranja dos ícones/detalhes
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos personalizados para o Mockup do Celular */
+        .phone-mockup {
+            border: 12px solid #1f2937;
+            border-radius: 2.5rem;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background-color: white;
+            aspect-ratio: 9/19; /* Proporção aproximada de celular */
+        }
+        
+        .phone-mockup img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
+        /* Notch (câmera frontal) */
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 25px;
+            background-color: #1f2937;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
+        }
+    </style>
+</head>
+<body class="text-gray-700 font-sans antialiased">
+
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2">
+                    <div class="bg-brand-light p-2 rounded-full text-brand-dark">
+                        <i class="fas fa-handshake fa-lg"></i>
+                    </div>
+                    <span class="font-bold text-xl text-gray-800 tracking-tight">Amigo da Vizinhança</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#funcionalidades" class="text-gray-600 hover:text-brand-DEFAULT transition">Funcionalidades</a>
+                    <a href="#como-funciona" class="text-gray-600 hover:text-brand-DEFAULT transition">Como Funciona</a>
+                    <a href="#videos-demonstracao" class="text-gray-600 hover:text-brand-DEFAULT transition">Vídeos</a>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-800 text-white px-6 py-2.5 rounded-full font-medium transition shadow-lg shadow-blue-600/30">
+                    Baixar Agora
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="pt-32 pb-20 lg:pt-40 lg:pb-28 gradient-bg overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                
+                <div data-aos="fade-right">
+                    <div class="inline-block px-4 py-1.5 bg-blue-100 text-brand-dark rounded-full text-sm font-semibold mb-6">
+                        🏠 Exclusivo para seu condomínio ou rua
+                    </div>
+                    <h1 class="text-4xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                        Vizinhos que se ajudam, <span class="text-brand-DEFAULT">comunidades que prosperam.</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Esqueça os grupos de mensagens caóticos. O <strong>Amigo da Vizinhança</strong> é a rede social hiperlocal para pedir ajuda, recomendar serviços e tornar seu prédio mais seguro e colaborativo.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button class="flex items-center justify-center gap-2 bg-gray-900 text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition">
+                            <i class="fab fa-apple text-2xl"></i>
+                            <div class="text-left">
+                                <div class="text-xs uppercase">Disponível na</div>
+                                <div class="font-bold leading-none">App Store</div>
+                            </div>
+                        </button>
+                        <button class="flex items-center justify-center gap-2 bg-gray-900 text-white px-8 py-3 rounded-xl hover:bg-gray-800 transition">
+                            <i class="fab fa-google-play text-xl"></i>
+                            <div class="text-left">
+                                <div class="text-xs uppercase">Disponível no</div>
+                                <div class="font-bold leading-none">Google Play</div>
+                            </div>
+                        </button>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500">
+                        * Gratuito para condomínios residenciais.
+                    </p>
+                </div>
+
+                <div class="relative flex justify-center lg:justify-end" data-aos="fade-left">
+                    <div class="absolute top-10 -right-20 w-72 h-72 bg-brand-light rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob"></div>
+                    <div class="absolute -bottom-10 right-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-70 animate-blob animation-delay-2000"></div>
+
+                    <div class="phone-mockup w-72 sm:w-80 rotate-3 transform hover:rotate-0 transition duration-500">
+                        <img src="image1.png" alt="Tela do Feed Residencial Harmonia">
+                    </div>
+
+                    <div class="absolute bottom-20 -left-10 bg-white p-4 rounded-xl shadow-xl max-w-xs border-l-4 border-brand-accent animate-bounce hidden sm:block">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-green-100 p-2 rounded-full text-green-600">
+                                <i class="fas fa-drill"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800 text-sm">João Santos</p>
+                                <p class="text-gray-600 text-xs">Alguém tem uma furadeira para emprestar?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="funcionalidades" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Tudo o que seu condomínio precisa</h2>
+                <p class="text-gray-600">Uma plataforma simples, focada em segurança e colaboração, sem algoritmos complexos ou propagandas invasivas.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-blue-100 text-brand-DEFAULT rounded-xl flex items-center justify-center mb-6 text-2xl">
+                        <i class="fas fa-bullhorn"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Mural de Pedidos</h3>
+                    <p class="text-gray-600 text-sm">Precisa de açúcar ou de uma ferramenta emprestada? Peça ajuda aos vizinhos em segundos.</p>
+                </div>
+
+                <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-orange-100 text-orange-500 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Recomendações</h3>
+                    <p class="text-gray-600 text-sm">Encontre encanadores, diaristas e serviços avaliados e confiados pelos seus próprios vizinhos.</p>
+                </div>
+
+                <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition border border-gray-100" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 bg-red-100 text-red-500 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Alertas de Segurança</h3>
+                    <p class="text-gray-600 text-sm">Notificações rápidas sobre atividades suspeitas para manter a segurança de todos.</p>
+                </div>
+
+                <div class="bg-gray-50 p-8 rounded-2xl hover:shadow-lg transition border border-gray-100" data-aos="fade-up" data-aos-delay="400">
+                    <div class="w-14 h-14 bg-green-100 text-green-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-gray-900">Doações e Trocas</h3>
+                    <p class="text-gray-600 text-sm">Desapegue do que não usa mais. Doe livros, brinquedos e móveis para quem mora ao lado.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="como-funciona" class="py-20 bg-brand-light/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <div class="relative h-[600px] flex justify-center items-center" data-aos="fade-right">
+                    <div class="phone-mockup w-64 absolute left-10 lg:left-20 -rotate-6 transform scale-90 z-10 shadow-2xl">
+                        <img src="image2.png" alt="Tela de Login">
+                    </div>
+                    
+                    <div class="phone-mockup w-64 absolute right-10 lg:right-20 rotate-6 z-20 shadow-2xl">
+                        <img src="image3.png" alt="Tela de Perfil Maria Silva">
+                    </div>
+                </div>
+
+                <div data-aos="fade-left">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Segurança e confiança em primeiro lugar</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="mt-1 bg-white p-2 rounded-lg shadow-sm h-fit text-brand-DEFAULT">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">Perfis Verificados</h4>
+                                <p class="text-gray-600">Cada usuário é verificado para garantir que realmente mora no condomínio. Mais segurança para interagir.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="mt-1 bg-white p-2 rounded-lg shadow-sm h-fit text-brand-DEFAULT">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">Sistema de Gratidão</h4>
+                                <p class="text-gray-600">Acumule pontos de "Ajuda" ao colaborar com vizinhos e torne-se uma referência na comunidade.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="mt-1 bg-white p-2 rounded-lg shadow-sm h-fit text-brand-DEFAULT">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800">Hiperlocalidade Real</h4>
+                                <p class="text-gray-600">Conteúdo 100% relevante para onde você mora. Sem notícias globais ou distrações.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="videos-demonstracao" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <div class="inline-block px-4 py-1.5 bg-blue-100 text-brand-dark rounded-full text-sm font-semibold mb-4">
+                    <i class="fas fa-video mr-2"></i> Assista e entenda
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-bold text-gray-900">Conheça nossa visão e o produto em ação</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 lg:gap-16">
+                
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <div class="aspect-video bg-gray-200 rounded-2xl shadow-lg overflow-hidden relative group">
+                        
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-100 border-4 border-white transition group-hover:bg-gray-200">
+                            <i class="fas fa-play-circle text-6xl mb-4 text-brand-DEFAULT opacity-80 group-hover:opacity-100 transition"></i>
+                            <span class="font-semibold">Inserir Vídeo do Pitch aqui</span>
+                            <span class="text-sm">(Duração: 3 min)</span>
+                        </div>
+                        </div>
+                    <h3 class="text-2xl font-bold mt-6 mb-2 text-gray-900">O Pitch do Projeto</h3>
+                    <p class="text-gray-600 leading-relaxed">Entenda em 3 minutos a dor que resolvemos, o tamanho da oportunidade e nossa visão de futuro para condomínios mais colaborativos.</p>
+                </div>
+
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <div class="aspect-video bg-gray-200 rounded-2xl shadow-lg overflow-hidden relative group">
+                         
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-100 border-4 border-white transition group-hover:bg-gray-200">
+                            <i class="fas fa-mobile-alt text-6xl mb-4 text-brand-accent opacity-80 group-hover:opacity-100 transition"></i>
+                            <span class="font-semibold">Inserir Demonstração do MVP aqui</span>
+                            <span class="text-sm">(Duração: 5 min)</span>
+                        </div>
+                        </div>
+                    <h3 class="text-2xl font-bold mt-6 mb-2 text-gray-900">Demonstração do MVP</h3>
+                    <p class="text-gray-600 leading-relaxed">Um tour completo de 5 minutos pelas principais funcionalidades do aplicativo funcionando em um cenário real.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <section class="py-24 bg-gradient-to-br from-brand-dark to-brand-DEFAULT text-white text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10" data-aos="zoom-in">
+            <h2 class="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight leading-tight">
+                Pronto para transformar<br>sua vizinhança?
+            </h2>
+            <p class="text-xl text-blue-100/90 mb-12 max-w-2xl mx-auto leading-relaxed">
+                Junte-se ao Residencial Harmonia e a milhares de outros condomínios que já estão mais seguros e conectados.
+            </p>
+            <button class="bg-white text-brand-dark font-bold py-5 px-12 rounded-full text-lg hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:shadow-blue-900/30 transform hover:-translate-y-1 flex items-center gap-3 mx-auto">
+                <span>Criar conta Grátis</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-8">
+            <div class="col-span-1 md:col-span-2">
+                <div class="flex items-center gap-2 mb-4 text-white">
+                    <i class="fas fa-handshake fa-lg"></i>
+                    <span class="font-bold text-xl">Amigo da Vizinhança</span>
+                </div>
+                <p class="text-sm max-w-xs">
+                    Conectando vizinhos, fortalecendo laços e criando comunidades mais seguras e colaborativas.
+                </p>
+            </div>
+            
+            <div>
+                <h4 class="text-white font-bold mb-4">Empresa</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Sobre nós</a></li>
+                    <li><a href="#" class="hover:text-white transition">Blog</a></li>
+                    <li><a href="#" class="hover:text-white transition">Carreiras</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition">Termos de Uso</a></li>
+                    <li><a href="#" class="hover:text-white transition">Privacidade</a></li>
+                    <li><a href="#" class="hover:text-white transition">Contato</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-gray-800 text-sm text-center">
+            &copy; 2024 Amigo da Vizinhança. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>
